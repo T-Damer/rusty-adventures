@@ -2,6 +2,6 @@
 name = "rusty-adventures"
 version = "0.0.1"
 authors = ["Daniil Pankov <dpancov64@gmail.com>"]
-edition = "2022"
+edition = "2021"
 
 [dependencies]
