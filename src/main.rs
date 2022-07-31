@@ -1,4 +1,6 @@
 use bevy::prelude::*;
+mod camera;
+pub use camera::*;
 
 struct Player;
 
@@ -6,14 +8,14 @@ fn spawn_player(mut commands: Commands, mut materials: ResMut<Assets<ColorMateri
     commands
         .spawn_bundle(SpriteBundle {
             material: materials.add(Color::rgb(0.7, 0.7, 0.7).into()),
-            sprite: Sprite::new(Vec2::new(10.0, 10.0)),
+            sprite: Sprite::new(Vec2::new(1.0, 1.0)),
             ..Default::default()
         })
         .insert(Player);
 }
 
 fn setup(mut commands: Commands) {
-    commands.spawn_bundle(OrthographicCameraBundle::new_2d());
+    commands.spawn_bundle(camera_2d());
 }
 
 // main
