@@ -94,7 +94,10 @@ fn spawn_player(mut commands: Commands, mut materials: ResMut<Assets<ColorMateri
             is_jumping: false,
         })
         .insert(RigidBodyPositionSync::Discrete)
-        .insert(Player { speed: 3.5 });
+        .insert(Player { speed: 3.5 })
+        .with_children(|parent| {
+            parent.spawn_bundle(camera_2d());
+        });
 }
 
 fn spawn_floor(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
@@ -119,11 +122,6 @@ fn spawn_floor(mut commands: Commands, mut materials: ResMut<Assets<ColorMateria
         .insert_bundle(collider)
         .insert(RigidBodyPositionSync::Discrete);
 }
-
-fn setup(mut commands: Commands) {
-    commands.spawn_bundle(camera_2d());
-}
-
 // main
 fn main() {
     App::build()
@@ -135,7 +133,6 @@ fn main() {
             ..Default::default()
         })
         .insert_resource(ClearColor(Color::rgb(0.04, 0.04, 0.04)))
-        .add_startup_system(setup.system())
         .add_startup_stage("player_setup", SystemStage::single(spawn_player.system()))
         .add_system(player_jumps.system())
         .add_system(jump_reset.system())
