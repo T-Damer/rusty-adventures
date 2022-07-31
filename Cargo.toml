@@ -2,7 +2,7 @@
 name = "rusty-adventures"
 version = "0.0.1"
 authors = ["Daniil Pankov <dpancov64@gmail.com>"]
-edition = "2018"
+edition = "2021"
 
 [dependencies]
-sdl2 = "0.32.1"
+bevy = "0.5"

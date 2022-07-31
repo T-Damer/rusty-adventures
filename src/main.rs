@@ -1,43 +1,34 @@
-use sdl2::pixels::Color;
-use sdl2::event::Event;
-use sdl2::keyboard::Keycode;
-use std::time::Duration;
+use bevy::prelude::*;
 
-fn main() -> Result<(), String> {
-    let sdl_context = sdl2::init()?;
-    let video_subsystem = sdl_context.video()?;
+struct Player;
 
-    let window = video_subsystem.window("rust-sdl2 demo", 800, 600)
-        .position_centered()
-        .build()
-        .expect("could not initialize video subsystem");
+fn spawn_player(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
+    commands
+        .spawn_bundle(SpriteBundle {
+            material: materials.add(Color::rgb(0.7, 0.7, 0.7).into()),
+            sprite: Sprite::new(Vec2::new(10.0, 10.0)),
+            ..Default::default()
+        })
+        .insert(Player);
+}
 
-    let mut canvas = window.into_canvas().build()
-        .expect("could not make a canvas");
+fn setup(mut commands: Commands) {
+    commands.spawn_bundle(OrthographicCameraBundle::new_2d());
+}
 
-    canvas.set_draw_color(Color::RGB(0, 255, 255));
-    canvas.clear();
-    canvas.present();
-    let mut event_pump = sdl_context.event_pump()?;
-    let mut i = 0;
-    'running: loop {
-        i = (i + 1) % 255;
-        canvas.set_draw_color(Color::RGB(i, 64, 255 - i));
-        canvas.clear();
-        for event in event_pump.poll_iter() {
-            match event {
-                Event::Quit {..} |
-                Event::KeyDown { keycode: Some(Keycode::Escape), .. } => {
-                    break 'running;
-                },
-                _ => {}
-            }
-        }
-        // The rest of the game loop goes here...
-
-        canvas.present();
-        ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 60));
-    }
-
-    Ok(())
+// main
+fn main() {
+    App::build()
+        .insert_resource(WindowDescriptor {
+            title: "Rusty adventures".to_string(),
+            width: 640.0,
+            height: 400.0,
+            vsync: true,
+            ..Default::default()
+        })
+        .insert_resource(ClearColor(Color::rgb(0.04, 0.04, 0.04)))
+        .add_startup_system(setup.system())
+        .add_startup_stage("player_setup", SystemStage::single(spawn_player.system()))
+        .add_plugins(DefaultPlugins)
+        .run();
 }
